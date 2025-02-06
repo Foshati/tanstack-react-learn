@@ -1,29 +1,18 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import ky from "ky";
 
 export default function Post() {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["post"],
+    queryFn: async () => {
+      const response = await ky
+        .get("https://jsonplaceholder.typicode.com/posts/1")
+        .json();
+      return response;
+    },
+  });
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await ky
-          .get("https://jsonplaceholder.typicode.com/posts/1")
-          .json();
-        setData(response);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchData();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return <p>Loading...</p>;
   }
 
