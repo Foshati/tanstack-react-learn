@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import ky from "ky";
 
-export default function Post() {
+function Posts() {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["post"],
+    queryKey: ["posts"],
     queryFn: async () => {
       const response = await ky
-        .get("https://jsonplaceholder.typicode.com/posts/1")
+        .get("https://jsonplaceholder.typicode.com/posts")
         .json();
       return response;
     },
@@ -22,8 +22,17 @@ export default function Post() {
 
   return (
     <div>
-      <h1>Post</h1>
-      <p>{JSON.stringify(data)}</p>
+      <h1>Posts</h1>
+      <ul>
+        {data.map((post) => (
+          <li key={post.id}>
+            <h2>{post.title}</h2>
+            <p>{post.body}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
+
+export default Posts;
